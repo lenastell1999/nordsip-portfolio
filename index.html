@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>NordSip Portfolio-Matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* Layout: Kopfzeile mit Reitern; Reiter "Matrix" = Eingabetabelle links, Diagramm rechts (schmal: untereinander); Reiter "Grundlagen" = Lesespalte mit Beispielmatrix */
+:root{
+  --bg:#f4f7f7; --surface:#ffffff; --surface-2:#eef3f3; --ink:#17323a; --muted:#5a6e74; --line:#d6e0e2;
+  --accent:#1d5c6b; --accent-ink:#ffffff; --accent-soft:#dcecef; --warn:#a1450e; --warn-soft:#fdeee2;
+  --q-qm:#e4e4e4; --q-star:#fff8c5; --q-dog:#ffd3d3; --q-cow:#dff0d6; --q-label:#1f2a2e; --divider:#8a9a9f; --grid:#ffffff;
+  --font-head:"Plus Jakarta Sans",system-ui,sans-serif; --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1a1d; --surface:#16252a; --surface-2:#1c2f35; --ink:#e3eef0; --muted:#9fb3b8; --line:#2c4249;
+  --accent:#6cc1d1; --accent-ink:#0f1a1d; --accent-soft:#1f3d45; --warn:#f2a36b; --warn-soft:#3a2416;
+  --q-qm:#3a3f41; --q-star:#4a4526; --q-dog:#4d2c2e; --q-cow:#2b4630; --q-label:#eef4f5; --divider:#9fb3b8; --grid:#ffffff22; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f1a1d; --surface:#16252a; --surface-2:#1c2f35; --ink:#e3eef0; --muted:#9fb3b8; --line:#2c4249;
+  --accent:#6cc1d1; --accent-ink:#0f1a1d; --accent-soft:#1f3d45; --warn:#f2a36b; --warn-soft:#3a2416;
+  --q-qm:#3a3f41; --q-star:#4a4526; --q-dog:#4d2c2e; --q-cow:#2b4630; --q-label:#eef4f5; --divider:#9fb3b8; --grid:#ffffff22; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1360px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{flex:none}
+.brand h1{font-family:var(--font-head);font-weight:800;font-size:1.35rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.brand p{margin:0;color:var(--muted);font-size:.85rem}
+nav.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:10px}
+nav.tabs a{font-weight:600;font-size:.9rem;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:7px}
+nav.tabs a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px #0000001a}
+nav.tabs a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1100px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.panel h2{font-family:var(--font-head);font-size:1.02rem;font-weight:700;margin:0 0 4px}
+.panel .hint{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+.tablewrap{overflow-x:auto;margin:0 -4px}
+table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:.88rem;min-width:560px;table-layout:fixed}
+table.data th{font-weight:600;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;line-height:1.3;text-align:left;padding:6px 5px 8px;vertical-align:bottom;border-bottom:1px solid var(--line)}
+table.data th.num,table.data td.num{text-align:right}
+table.data td{padding:6px 5px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.data tr.off td{opacity:.45}
+table.data input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--surface-2);border:1px solid transparent;border-radius:7px;padding:6px 8px;font-variant-numeric:tabular-nums}
+table.data input[type=text]:hover{border-color:var(--line)}
+table.data input.num{text-align:right}
+table.data input.bad{border-color:var(--warn);background:var(--warn-soft)}
+.rma{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.swatch{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0;display:block}
+.iconbtn{background:none;border:1px solid transparent;color:var(--muted);border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:1.1rem;line-height:1}
+.iconbtn:hover{border-color:var(--line);color:var(--warn)}
+.chk{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button.btn{font:600 .87rem var(--font-body);border-radius:8px;padding:8px 13px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+button.btn:hover{border-color:var(--accent)}
+button.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.btn.ghost{background:none;color:var(--muted)}
+details.axes{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+details.axes summary{cursor:pointer;font-weight:600;font-size:.9rem}
+.axgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px;margin-top:12px}
+.axgrid label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted)}
+.axgrid input{font:inherit;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:6px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.compare{margin-top:16px;padding:12px 14px;border-radius:10px;background:var(--accent-soft);font-size:.86rem;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.compare strong{font-weight:600}
+.compare label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.charthead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;align-items:baseline;margin-bottom:8px}
+.charthead h2{margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.chartbox{width:100%;max-width:100%}
+.chartbox svg{display:block;width:100%;height:auto}
+.notes{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.notes li{font-size:.84rem;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:7px 11px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:.88rem;display:flex;gap:14px;align-items:center;box-shadow:0 6px 20px #00000033;z-index:20}
+.toast button{background:none;border:none;color:var(--bg);font:700 .88rem var(--font-body);text-decoration:underline;cursor:pointer}
+/* Grundlagen */
+.read{max-width:1000px}
+.read .lead{font-size:1.02rem;max-width:68ch;color:var(--ink)}
+.read h2{font-family:var(--font-head);font-size:1.25rem;font-weight:800;margin:34px 0 8px;letter-spacing:-.01em;text-wrap:balance}
+.read p{max-width:68ch;margin:0 0 10px}
+.formula{display:inline-flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:6px 0 10px;flex-wrap:wrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;font-weight:600}
+.frac span:first-child{border-bottom:2px solid var(--ink);padding:0 6px 2px}
+.frac span:last-child{padding:2px 6px 0}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+@media (max-width:640px){.fields{grid-template-columns:minmax(0,1fr)}}
+.field{border-radius:12px;padding:16px;border:1px solid var(--line);min-width:0}
+.field.qm{background:var(--q-qm)} .field.star{background:var(--q-star)} .field.dog{background:var(--q-dog)} .field.cow{background:var(--q-cow)}
+.field h3{font-family:var(--font-head);font-style:italic;font-weight:800;font-size:1.05rem;margin:0 0 2px;color:var(--q-label)}
+.field .pos{font-size:.8rem;color:var(--q-label);opacity:.75;margin:0 0 10px}
+.field .ns{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--q-label);opacity:.8;margin:0}
+.field .nsname{font-weight:700;margin:0 0 4px;color:var(--q-label)}
+.field p.d{margin:0;font-size:.9rem;color:var(--q-label)}
+ol.steps{max-width:68ch;padding-left:1.3em;margin:0}
+ol.steps li{margin-bottom:6px}
+.examplebox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:10px}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:6px;margin-bottom:8px}
+@media (prefers-reduced-motion:no-preference){ .bubble{transition:transform .35s ease} }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg width="34" height="40" viewBox="0 0 34 40" aria-hidden="true"><path d="M17 1C17 1 3 16 3 25a14 14 0 0 0 28 0C31 16 17 1 17 1Z" fill="var(--accent)"/><path d="M7 27q5-5 10 0t10 0" fill="none" stroke="var(--surface)" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <div>
+        <h1>NordSip Portfolio-Matrix</h1>
+        <p>Marktwachstums-Marktanteils-Portfolio für die Produkte der NordSip GmbH</p>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Bereiche">
+      <a href="#matrix" id="tab-matrix">Matrix erstellen</a>
+      <a href="#grundlagen" id="tab-grundlagen">Portfolio-Matrix erklärt</a>
+    </nav>
+  </header>
+
+  <!-- ===================== MATRIX ===================== -->
+  <section id="view-matrix">
+    <div class="grid">
+      <div class="panel">
+        <h2>Produktdaten</h2>
+        <p class="hint">Tragen Sie die Werte aus den Produktdatenblättern ein. Der relative Marktanteil wird automatisch berechnet.</p>
+        <div class="tablewrap">
+          <table class="data">
+            <colgroup><col style="width:62px"><col><col style="width:84px"><col style="width:92px"><col style="width:104px"><col style="width:66px"><col style="width:38px"></colgroup>
+            <thead><tr>
+              <th title="Farbe wechseln und in der Matrix ein- oder ausblenden">Farbe / Zeigen</th>
+              <th>Produkt</th>
+              <th class="num">Markt&shy;wachstum in %</th>
+              <th class="num">Eigener Umsatz in TEUR</th>
+              <th class="num">Umsatz stärkster Konkurrent in TEUR</th>
+              <th class="num">Rel. Markt&shy;anteil</th>
+              <th><span hidden>Entfernen</span></th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button class="btn" id="add" type="button">+ Produkt hinzufügen</button>
+          <button class="btn primary" id="snap" type="button">Ausgangslage speichern</button>
+          <button class="btn ghost" id="reset" type="button">Alle Werte leeren</button>
+        </div>
+        <div class="compare" id="comparebox" hidden>
+          <strong id="comparetxt">Ausgangslage gespeichert.</strong>
+          <label><input type="checkbox" class="chk" id="showcmp" checked> Im Diagramm vergleichen</label>
+          <button class="btn ghost" id="dropsnap" type="button">Ausgangslage verwerfen</button>
+        </div>
+        <details class="axes" id="axesbox">
+          <summary>Achsen und Trennlinien anpassen</summary>
+          <div class="axgrid">
+            <label for="ymin">Marktwachstum von (%)<input type="text" inputmode="decimal" id="ymin"></label>
+            <label for="ymax">Marktwachstum bis (%)<input type="text" inputmode="decimal" id="ymax"></label>
+            <label for="ydiv">Branchendurchschnitt (%)<input type="text" inputmode="decimal" id="ydiv"></label>
+            <label for="xmax">Rel. Marktanteil bis<input type="text" inputmode="decimal" id="xmax"></label>
+            <label for="xdiv">Trennlinie rel. Marktanteil<input type="text" inputmode="decimal" id="xdiv"></label>
+          </div>
+        </details>
+      </div>
+
+      <div class="panel">
+        <div class="charthead">
+          <h2>Portfolio-Matrix</h2>
+          <div class="legend" id="legend"><span>Kreisgröße = eigener Umsatz</span></div>
+        </div>
+        <div class="chartbox" id="chart"></div>
+        <ul class="notes" id="notes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GRUNDLAGEN ===================== -->
+  <section id="view-grundlagen" class="read" hidden>
+    <p class="lead">Die Portfolioanalyse, auch Marktwachstums-Marktanteils-Portfolio oder BCG-Matrix genannt, stellt alle Produkte eines Unternehmens in einer Matrix dar. So lässt sich auf einen Blick erkennen, wie das Produktportfolio aufgestellt ist und in welche Richtung die einzelnen Produkte gesteuert werden können.</p>
+
+    <h2>Die beiden Achsen</h2>
+    <p><strong>Marktwachstum (senkrechte Achse):</strong> Wie stark wächst der Markt, in dem das Produkt verkauft wird? Die Trennlinie zwischen hohem und niedrigem Marktwachstum bildet der Branchendurchschnitt.</p>
+    <p><strong>Relativer Marktanteil (waagerechte Achse):</strong> Wie stark ist das eigene Produkt im Vergleich zum stärksten Konkurrenzprodukt?</p>
+    <div class="formula" role="img" aria-label="Relativer Marktanteil gleich eigener Umsatz geteilt durch Umsatz des stärksten Konkurrenten">
+      <span>Relativer Marktanteil =</span>
+      <span class="frac"><span>eigener Umsatz</span><span>Umsatz des stärksten Konkurrenten</span></span>
+    </div>
+    <p>Ein Wert über 1 bedeutet: Das eigene Produkt ist Marktführer. Ein Wert unter 1 bedeutet: Die Konkurrenz ist stärker. Die Trennlinie liegt deshalb bei 1.</p>
+    <p><strong>Kreisgröße:</strong> Die Fläche eines Kreises zeigt den Umsatz des Produktes. Je größer der Kreis, desto wichtiger ist das Produkt für den Gesamtumsatz.</p>
+
+    <h2>Die vier Felder und ihre Normstrategien</h2>
+    <div class="fields">
+      <div class="field qm"><h3>Question Marks</h3><p class="pos">hohes Marktwachstum, niedriger relativer Marktanteil</p>
+        <p class="ns">Normstrategie</p><p class="nsname">Offensiv- oder Rückzugsstrategie</p>
+        <p class="d">Selektion: In erfolgversprechende Produkte stark investieren, fragliche Produkte aufgeben.</p></div>
+      <div class="field star"><h3>Stars</h3><p class="pos">hohes Marktwachstum, hoher relativer Marktanteil</p>
+        <p class="ns">Normstrategie</p><p class="nsname">Investitionsstrategie</p>
+        <p class="d">Investieren, um mit dem Marktwachstum Schritt zu halten und den relativen Marktanteil zu halten oder auszubauen.</p></div>
+      <div class="field dog"><h3>Poor Dogs</h3><p class="pos">niedriges Marktwachstum, niedriger relativer Marktanteil</p>
+        <p class="ns">Normstrategie</p><p class="nsname">Desinvestitionsstrategie</p>
+        <p class="d">Das Produkt abstoßen bzw. aufgeben oder den Marktanteil abbauen.</p></div>
+      <div class="field cow"><h3>Cash Cows</h3><p class="pos">niedriges Marktwachstum, hoher relativer Marktanteil</p>
+        <p class="ns">Normstrategie</p><p class="nsname">Abschöpfungsstrategie</p>
+        <p class="d">Erhaltungsinvestitionen tätigen, um die Marktposition möglichst lange zu halten und Gewinne abzuschöpfen.</p></div>
+    </div>
+
+    <h2>So gehen Sie vor</h2>
+    <ol class="steps">
+      <li>Marktwachstum, eigenen Umsatz und Umsatz des stärksten Konkurrenten aus den Unterlagen heraussuchen.</li>
+      <li>Werte im Reiter „Matrix erstellen“ eintragen. Der relative Marktanteil wird berechnet.</li>
+      <li>Ablesen, in welchem Feld jedes Produkt liegt, und die Position mit den Werten begründen.</li>
+      <li>Die Normstrategie ableiten und mit den übrigen Informationen prüfen.</li>
+    </ol>
+
+    <h2>Beispiel</h2>
+    <div class="examplebox">
+      <span class="tag">Beispiel mit erfundenen Zahlen</span>
+      <p style="margin:0 0 10px;color:var(--muted);font-size:.88rem">Die Beispiel GmbH stellt Fahrradzubehör her. Branchendurchschnitt: 10 %.</p>
+      <div class="chartbox" id="examplechart"></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden><span id="toasttxt"></span><button type="button" id="undo">Rückgängig</button></div>
+
+<script>
+(function(){
+  const PALETTE=['#a9d18e','#f4b183','#bfbfbf','#ffd966','#8faadc','#c9a0dc','#7fcdbb','#f28e8e'];
+  const KEY='nordsip-portfolio-v1';
+  const DEFAULT_PRODUCTS=[['ClassicSip',0],['BigSip',1],['SmartSip',2],['MiniSip',3],['ThermoSip',4]];
+  const DEFAULT_AXES={ymin:0,ymax:20,ydiv:10,xmax:2,xdiv:1};
+  let uid=1;
+  const blank=(name,ci)=>({id:uid++,name,color:PALETTE[ci%PALETTE.length],mw:'',u:'',k:'',on:true});
+  let state={products:DEFAULT_PRODUCTS.map(([n,c])=>blank(n,c)),axes:{...DEFAULT_AXES},snap:null,showcmp:true};
+
+  function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.products)){state=Object.assign(state,s);uid=Math.max(0,...state.products.map(p=>p.id||0))+1;state.products.forEach(p=>{if(!p.id)p.id=uid++});}}catch(e){}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+  const num=v=>{if(v===null||v===undefined)return NaN;const s=String(v).replace('%','').replace(/\s/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');if(s===''||s==='-')return NaN;return Number(s)};
+  const fmt=(n,d)=>n.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function rma(p){const u=num(p.u),k=num(p.k);return (isFinite(u)&&isFinite(k)&&k>0)?u/k:NaN}
+
+  /* ---------- table ---------- */
+  const tbody=document.getElementById('rows');
+  function renderRows(){
+    tbody.innerHTML=state.products.map(p=>{
+      const r=rma(p);
+      return `<tr data-id="${p.id}" class="${p.on?'':'off'}">
+        <td><div style="display:flex;align-items:center;gap:8px"><button class="swatch" type="button" data-act="color" style="background:${p.color}" title="Farbe wechseln" aria-label="Farbe von ${esc(p.name)} wechseln"></button><input class="chk" type="checkbox" id="on-${p.id}" data-f="on" ${p.on?'checked':''} title="In der Matrix anzeigen" aria-label="${esc(p.name)} anzeigen"></div></td>
+        <td><input type="text" id="name-${p.id}" data-f="name" value="${esc(p.name)}" aria-label="Produktname"></td>
+        <td class="num"><input type="text" class="num" inputmode="decimal" id="mw-${p.id}" data-f="mw" value="${esc(p.mw)}" placeholder="z. B. 3" aria-label="Marktwachstum in Prozent"></td>
+        <td class="num"><input type="text" class="num" inputmode="decimal" id="u-${p.id}" data-f="u" value="${esc(p.u)}" aria-label="Eigener Umsatz in TEUR"></td>
+        <td class="num"><input type="text" class="num" inputmode="decimal" id="k-${p.id}" data-f="k" value="${esc(p.k)}" aria-label="Umsatz stärkster Konkurrent in TEUR"></td>
+        <td class="num"><span class="rma" id="rma-${p.id}">${isFinite(r)?fmt(r,2):'–'}</span></td>
+        <td><button class="iconbtn" type="button" data-act="del" title="Produkt entfernen" aria-label="${esc(p.name)} entfernen">×</button></td>
+      </tr>`}).join('');
+    markBad();
+  }
+  function markBad(){
+    state.products.forEach(p=>{['mw','u','k'].forEach(f=>{const el=document.getElementById(f+'-'+p.id);if(!el)return;const v=p[f];const bad=String(v).trim()!==''&&!isFinite(num(v));el.classList.toggle('bad',bad);el.title=bad?'Bitte eine Zahl eingeben, z. B. 3,5':''})})
+  }
+  tbody.addEventListener('input',e=>{
+    const tr=e.target.closest('tr');if(!tr)return;const p=state.products.find(x=>x.id==tr.dataset.id);const f=e.target.dataset.f;if(!p||!f)return;
+    if(f==='on'){p.on=e.target.checked;tr.classList.toggle('off',!p.on)}else{p[f]=e.target.value}
+    const r=rma(p);const cell=document.getElementById('rma-'+p.id);if(cell)cell.textContent=isFinite(r)?fmt(r,2):'–';
+    markBad();save();drawMain();
+  });
+  tbody.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-act]');if(!b)return;const tr=b.closest('tr');const idx=state.products.findIndex(x=>x.id==tr.dataset.id);const p=state.products[idx];
+    if(b.dataset.act==='color'){const i=PALETTE.indexOf(p.color);p.color=PALETTE[(i+1)%PALETTE.length];b.style.background=p.color}
+    if(b.dataset.act==='del'){const removed=state.products.splice(idx,1)[0];showToast(`„${removed.name}“ entfernt.`,()=>{state.products.splice(idx,0,removed);renderRows();save();drawMain()});renderRows()}
+    save();drawMain();
+  });
+  document.getElementById('add').addEventListener('click',()=>{const n=blank('Neues Produkt',state.products.length);state.products.push(n);renderRows();save();drawMain();const el=document.getElementById('name-'+n.id);if(el){el.focus();el.select()}});
+  document.getElementById('reset').addEventListener('click',()=>{const prev=JSON.parse(JSON.stringify(state.products));state.products.forEach(p=>{p.mw='';p.u='';p.k=''});renderRows();save();drawMain();showToast('Alle Werte geleert.',()=>{state.products=prev;renderRows();save();drawMain()})});
+
+  /* ---------- snapshot ---------- */
+  const cbox=document.getElementById('comparebox');
+  function snapshotData(){return state.products.filter(p=>p.on).map(p=>({name:p.name,color:p.color,mw:num(p.mw),u:num(p.u),r:rma(p)})).filter(p=>isFinite(p.mw)&&isFinite(p.u)&&isFinite(p.r))}
+  document.getElementById('snap').addEventListener('click',()=>{
+    const d=snapshotData();if(!d.length){showToast('Erst Werte eintragen, dann die Ausgangslage speichern.');return}
+    state.snap={items:d,time:new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})};state.showcmp=true;save();renderCompare();drawMain();
+    showToast('Ausgangslage gespeichert. Ändern Sie jetzt die Werte, um zu vergleichen.');
+  });
+  document.getElementById('dropsnap').addEventListener('click',()=>{const prev=state.snap;state.snap=null;save();renderCompare();drawMain();showToast('Ausgangslage verworfen.',()=>{state.snap=prev;save();renderCompare();drawMain()})});
+  document.getElementById('showcmp').addEventListener('change',e=>{state.showcmp=e.target.checked;save();drawMain()});
+  function renderCompare(){cbox.hidden=!state.snap;if(state.snap){document.getElementById('comparetxt').textContent=`Ausgangslage von ${state.snap.time} Uhr gespeichert (${state.snap.items.length} Produkte).`;document.getElementById('showcmp').checked=state.showcmp}}
+
+  /* ---------- axes ---------- */
+  const axIds=['ymin','ymax','ydiv','xmax','xdiv'];
+  function renderAxes(){axIds.forEach(k=>{document.getElementById(k).value=fmt(state.axes[k],k[0]==='x'?1:1).replace(/,0$/,'')})}
+  axIds.forEach(k=>document.getElementById(k).addEventListener('input',e=>{const v=num(e.target.value);const ok=isFinite(v);e.target.classList.toggle('bad',!ok);if(ok){state.axes[k]=v;save();drawMain()}}));
+  function axesValid(a){return a.ymax>a.ymin&&a.xmax>0}
+
+  /* ---------- chart ---------- */
+  function niceStep(range){const raw=range/5;const pow=Math.pow(10,Math.floor(Math.log10(raw)));const m=raw/pow;return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*pow}
+  function chartSVG(items,axes,opts){
+    const W=760,H=560,L=74,R=22,T=40,B=64;const pw=W-L-R,ph=H-T-B;
+    const a=axes;const X=v=>L+(v/a.xmax)*pw;const Y=v=>T+ph-((v-a.ymin)/(a.ymax-a.ymin))*ph;
+    const xd=Math.min(Math.max(a.xdiv,0),a.xmax),yd=Math.min(Math.max(a.ydiv,a.ymin),a.ymax);
+    const ghosts=opts.ghosts||[];
+    const uMax=Math.max(1,...items.map(p=>p.u),...ghosts.map(p=>p.u));const rMax=Math.min(pw,ph)*0.095;
+    const rad=u=>Math.max(9,rMax*Math.sqrt(Math.max(u,0)/uMax));
+    let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label||'Portfolio-Matrix')}" xmlns="http://www.w3.org/2000/svg">`;
+    s+=`<defs><clipPath id="clip-${opts.key}"><rect x="${L-30}" y="0" width="${pw+30+R}" height="${T+ph+6}"/></clipPath></defs>`;
+    s+=`<rect x="${L}" y="${T}" width="${X(xd)-L}" height="${Y(yd)-T}" fill="var(--q-qm)"/>`;
+    s+=`<rect x="${X(xd)}" y="${T}" width="${L+pw-X(xd)}" height="${Y(yd)-T}" fill="var(--q-star)"/>`;
+    s+=`<rect x="${L}" y="${Y(yd)}" width="${X(xd)-L}" height="${T+ph-Y(yd)}" fill="var(--q-dog)"/>`;
+    s+=`<rect x="${X(xd)}" y="${Y(yd)}" width="${L+pw-X(xd)}" height="${T+ph-Y(yd)}" fill="var(--q-cow)"/>`;
+    const ys=niceStep(a.ymax-a.ymin);const y0=Math.ceil(a.ymin/ys-1e-9)*ys;
+    for(let i=0,v=y0;v<=a.ymax+1e-9;i++,v=Math.round((y0+i*ys)*1e6)/1e6+0){const y=Y(v);s+=`<line x1="${L}" x2="${L+pw}" y1="${y}" y2="${y}" stroke="var(--grid)" stroke-width="1.2"/><text x="${L-8}" y="${y+4}" text-anchor="end" font-size="13" fill="var(--muted)" font-family="Inter,sans-serif">${fmt(v+0,v%1?1:0)} %</text>`}
+    const xs=niceStep(a.xmax);for(let i=0,v=0;v<=a.xmax+1e-9;i++,v=Math.round(i*xs*1e6)/1e6){const x=X(v);s+=`<line x1="${x}" x2="${x}" y1="${T}" y2="${T+ph}" stroke="var(--grid)" stroke-width="1.2"/><text x="${x}" y="${T+ph+18}" text-anchor="middle" font-size="13" fill="var(--muted)" font-family="Inter,sans-serif">${fmt(v,xs<1?1:0)}</text>`}
+    s+=`<line x1="${X(xd)}" x2="${X(xd)}" y1="${T}" y2="${T+ph}" stroke="var(--divider)" stroke-width="2"/><line x1="${L}" x2="${L+pw}" y1="${Y(yd)}" y2="${Y(yd)}" stroke="var(--divider)" stroke-width="2"/>`;
+    s+=`<text x="${L+pw+0}" y="${Y(yd)-6}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Inter,sans-serif">Branchendurchschnitt ${fmt(yd,yd%1?1:0)} %</text>`;
+    s+=`<rect x="${L}" y="${T}" width="${pw}" height="${ph}" fill="none" stroke="var(--line)"/>`;
+    const ql=(t,x,y,anc)=>`<text x="${x}" y="${y}" text-anchor="${anc}" font-family="Plus Jakarta Sans,sans-serif" font-style="italic" font-weight="800" font-size="17" fill="var(--q-label)" opacity=".85">${t}</text>`;
+    s+=ql('Question Marks',L+12,T+26,'start')+ql('Stars',L+pw-12,T+26,'end')+ql('Poor Dogs',L+12,T+ph-12,'start')+ql('Cash Cows',L+pw-12,T+ph-12,'end');
+    s+=`<text x="${L+pw/2}" y="${H-12}" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)" font-family="Inter,sans-serif">relativer Marktanteil</text>`;
+    s+=`<text transform="translate(18 ${T+ph/2}) rotate(-90)" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)" font-family="Inter,sans-serif">Marktwachstum</text>`;
+    const clampX=v=>Math.min(Math.max(v,0),a.xmax),clampY=v=>Math.min(Math.max(v,a.ymin),a.ymax);
+    s+=`<g clip-path="url(#clip-${opts.key})">`;
+    // ghosts (saved state)
+    ghosts.forEach(g=>{const cx=X(clampX(g.r)),cy=Y(clampY(g.mw)),r=rad(g.u);
+      const now=items.find(p=>p.name===g.name);
+      if(now){const nx=X(clampX(now.r)),ny=Y(clampY(now.mw));const d=Math.hypot(nx-cx,ny-cy);if(d>4){s+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="4 4" opacity=".55"/>`}}
+      s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${g.color}" fill-opacity=".18" stroke="${g.color}" stroke-width="2.4" stroke-dasharray="6 5"/>`;
+      if(!now){s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--q-label)" font-family="Inter,sans-serif" opacity=".7">${esc(g.name)}</text><text x="${cx}" y="${cy+19}" text-anchor="middle" font-size="10.5" fill="var(--q-label)" font-family="Inter,sans-serif" opacity=".7">(entfernt)</text>`}
+    });
+    const sorted=[...items].sort((p,q)=>q.u-p.u);
+    sorted.forEach(p=>{const cx=X(clampX(p.r)),cy=Y(clampY(p.mw)),r=rad(p.u);s+=`<circle class="bubble" cx="${cx}" cy="${cy}" r="${r}" fill="${p.color}" stroke="#ffffff" stroke-width="2"/>`});
+    sorted.forEach(p=>{const cx=X(clampX(p.r)),cy=Y(clampY(p.mw)),r=rad(p.u);const inside=r>=27;const ty=inside?cy+5:cy+r+15;
+      s+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="${inside?14.5:13.5}" font-weight="700" font-family="Inter,sans-serif" fill="#1f2a2e" ${inside?'stroke="#ffffff" stroke-opacity=".55" stroke-width="3" paint-order="stroke"':'stroke="var(--surface)" stroke-width="3.5" paint-order="stroke"'}>${esc(p.name)}</text>`;
+      const out=(p.r>a.xmax||p.r<0||p.mw>a.ymax||p.mw<a.ymin);if(out){s+=`<circle cx="${cx}" cy="${cy}" r="${r+5}" fill="none" stroke="var(--warn)" stroke-width="2" stroke-dasharray="3 3"/>`}
+    });
+    s+=`</g></svg>`;return s;
+  }
+  function drawMain(){
+    const a=state.axes;const notes=[];
+    if(!axesValid(a)){document.getElementById('chart').innerHTML='';document.getElementById('notes').innerHTML='<li>Bitte die Achsen prüfen: Der obere Wert muss größer sein als der untere.</li>';return}
+    const items=[];state.products.forEach(p=>{if(!p.on)return;const mw=num(p.mw),u=num(p.u),r=rma(p);
+      if(isFinite(mw)&&isFinite(u)&&isFinite(r)){items.push({name:p.name,color:p.color,mw,u,r});
+        if(mw>a.ymax||mw<a.ymin)notes.push(`${p.name} liegt mit ${fmt(mw,mw%1?1:0)} % außerhalb der Achse Marktwachstum. Passen Sie unter „Achsen und Trennlinien anpassen“ den Bereich an.`);
+        if(r>a.xmax)notes.push(`${p.name} liegt mit einem relativen Marktanteil von ${fmt(r,2)} außerhalb der Achse.`);}
+    });
+    const ghosts=(state.snap&&state.showcmp)?state.snap.items:[];
+    document.getElementById('chart').innerHTML=chartSVG(items,a,{key:'main',ghosts,label:'Portfolio-Matrix der eingetragenen Produkte'});
+    const empty=!items.length;
+    if(empty)notes.unshift('Sobald für ein Produkt Marktwachstum, eigener Umsatz und Konkurrenzumsatz eingetragen sind, erscheint es als Kreis in der Matrix.');
+    document.getElementById('notes').innerHTML=notes.map(n=>`<li>${esc(n)}</li>`).join('');
+    document.getElementById('notes').firstElementChild&&empty&&(document.getElementById('notes').firstElementChild.style.cssText='background:var(--accent-soft);color:var(--ink)');
+    const lg=document.getElementById('legend');lg.innerHTML='<span>Kreisgröße = eigener Umsatz</span>'+(ghosts.length?'<span><svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 2"/></svg>gestrichelt = gespeicherte Ausgangslage</span>':'');
+  }
+  function drawExample(){
+    const items=[{name:'Fahrradlampe',color:'#a9d18e',mw:4,u:5200,r:1.6},{name:'E-Bike-Akku',color:'#f4b183',mw:17,u:3900,r:1.25},{name:'Smart-Schloss',color:'#bfbfbf',mw:15,u:700,r:0.35},{name:'Kindersitz',color:'#ffd966',mw:12,u:1300,r:0.75},{name:'Klingel',color:'#8faadc',mw:2,u:600,r:0.45}];
+    document.getElementById('examplechart').innerHTML=chartSVG(items,{ymin:0,ymax:20,ydiv:10,xmax:2,xdiv:1},{key:'ex',label:'Beispielmatrix der Beispiel GmbH'});
+  }
+
+  /* ---------- toast ---------- */
+  let tt,undoFn=null;const toast=document.getElementById('toast');
+  function showToast(msg,undo){document.getElementById('toasttxt').textContent=msg;undoFn=undo||null;document.getElementById('undo').hidden=!undo;toast.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{toast.hidden=true;undoFn=null},5000)}
+  document.getElementById('undo').addEventListener('click',()=>{if(undoFn)undoFn();undoFn=null;toast.hidden=true});
+
+  /* ---------- tabs ---------- */
+  function route(){const h=(location.hash||'#matrix').slice(1);const g=h==='grundlagen';document.getElementById('view-matrix').hidden=g;document.getElementById('view-grundlagen').hidden=!g;
+    document.getElementById('tab-matrix').toggleAttribute('aria-current',!g);document.getElementById('tab-grundlagen').toggleAttribute('aria-current',g);
+    if(!g)document.getElementById('tab-matrix').setAttribute('aria-current','page');else document.getElementById('tab-grundlagen').setAttribute('aria-current','page')}
+  window.addEventListener('hashchange',route);
+
+  load();renderRows();renderAxes();renderCompare();drawMain();drawExample();route();
+})();
+</script>
+
+</body>
+</html>
